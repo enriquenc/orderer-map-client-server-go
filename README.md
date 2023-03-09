@@ -47,16 +47,17 @@ go run client --help
 
   -action string
         Action to perform: add, remove, get, or getAll
-  -file string
-        File name to read actions
   -key string
         Key to use for the item
-  -queue string
-        RabbitMQ queue name (default "requests")
-  -server string
-        RabbitMQ server address (default "localhost:5672")
   -value string
         Value to use for the item
+  -file string
+        File name to read actions
+  -mq-url string
+        RabbitMQ server address (default "amqp://guest:guest@localhost:5672/")
+  -queue string
+        RabbitMQ queue name (default "requests")
+
 ```
 
 It's possible to perform one action per client running as well as from the file.
@@ -78,10 +79,10 @@ The server reads data from the message queue and performs the operations in para
 go run server --help
   -log-file string
         Log file name (default "server.log")
+  -mq-url string
+        RabbitMQ URL (default "amqp://guest:guest@localhost:5672/")
   -queue string
         RabbitMQ queue name (default "requests")
-  -rabbitmq-url string
-        RabbitMQ URL (default "amqp://guest:guest@localhost:5672/")
 ```
 
 So, to run the server you can just run following command in case all the stuff was installed by default:
@@ -100,10 +101,9 @@ Generates the mentioned amount of data with the expected results for data consis
   -file string
         Value to use for the item (default "testdata.json")
   -max int
-        the max number from the range for generated keys and values (default 20)
+        max number from range generated keys and values (default 20)
   -min int
-        the min number from the range for generated keys and values
-
+        min number from range generated keys and values (default 0)
 ```
 
 The data type of generated data:

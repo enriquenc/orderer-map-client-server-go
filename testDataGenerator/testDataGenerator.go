@@ -72,7 +72,7 @@ func main() {
 			}
 		}
 
-		testData = append(testData, types.TestDataAction{Action: action, Key: key, Value: value, ExpectedResponse: expectedResponse})
+		testData = append(testData, types.TestDataAction{RequestData: types.Request{Action: action, Key: key, Value: value}, ExpectedResponse: expectedResponse})
 	}
 
 	encoder := json.NewEncoder(file)

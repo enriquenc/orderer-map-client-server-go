@@ -14,8 +14,6 @@ type Request struct {
 }
 
 type TestDataAction struct {
-	Action           string
-	Key              string
-	Value            string
+	RequestData      Request
 	ExpectedResponse interface{}
 }
