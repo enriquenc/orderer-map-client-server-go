@@ -9,14 +9,9 @@ import (
 	"os"
 
 	"github.com/iancoleman/orderedmap"
-)
 
-type Action struct {
-	Command          string
-	Key              string
-	Value            string
-	ExpectedResponse interface{}
-}
+	types "github.com/enriquenc/orderer-map-client-server-go/shared"
+)
 
 func main() {
 	dataAmount := flag.Int("amount", 1000, "Value to use for the item")
@@ -25,7 +20,7 @@ func main() {
 	max := flag.Int("max", 20, "max number from range generated keys and values")
 	flag.Parse()
 	// Define the actions that the client can perform
-	actions := []string{"add", "remove", "get", "getAll"}
+	actions := []string{types.AddItem, types.RemoveItem, types.GetItem, types.GetAll}
 
 	if *min < 0 || *max < 0 || *max < *min {
 		log.Fatalf("Error min/max values for the range")
@@ -38,7 +33,7 @@ func main() {
 	defer file.Close()
 
 	// Generate 1000 random test data
-	var testData []Action
+	var testData []types.TestDataAction
 	serverMap := orderedmap.New()
 
 	for i := 0; i < *dataAmount; i++ {
@@ -53,12 +48,12 @@ func main() {
 		var expectedResponse interface{}
 		var value string
 		switch action {
-		case "add":
+		case types.AddItem:
 			value = fmt.Sprintf("value%d", randKeyValue)
 			serverMap.Set(key, value)
-		case "remove":
+		case types.RemoveItem:
 			serverMap.Delete(key)
-		case "get":
+		case types.GetItem:
 			val, ok := serverMap.Get(key)
 			if ok {
 				value = val.(string)
@@ -67,7 +62,7 @@ func main() {
 				value = ""
 				expectedResponse = nil
 			}
-		case "getAll":
+		case types.GetAll:
 			// create a new ordered map to hold the expected response
 			expectedResponse = orderedmap.New()
 			keys := serverMap.Keys()
@@ -77,7 +72,7 @@ func main() {
 			}
 		}
 
-		testData = append(testData, Action{Command: action, Key: key, Value: value, ExpectedResponse: expectedResponse})
+		testData = append(testData, types.TestDataAction{Action: action, Key: key, Value: value, ExpectedResponse: expectedResponse})
 	}
 
 	encoder := json.NewEncoder(file)

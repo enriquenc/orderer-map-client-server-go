@@ -8,15 +8,12 @@ import (
 	"os"
 	"os/signal"
 
+	orderermap "server/orderer-map"
+
+	types "github.com/enriquenc/orderer-map-client-server-go/shared"
+
 	"github.com/streadway/amqp"
 )
-
-// Request represents a request message from RabbitMQ.
-type Request struct {
-	Action string
-	Key    string
-	Value  string
-}
 
 func main() {
 	// Parse command line arguments
@@ -38,7 +35,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	ds := NewOrderedMap()
+	dataStorage := orderermap.NewOrderedMap()
 
 	// Create a channel
 	ch, err := conn.Channel()
@@ -60,7 +57,7 @@ func main() {
 		log.Fatalf("Failed to declare a queue: %v", err)
 	}
 
-	requestProcessingChannel := make(chan Request)
+	requestProcessingChannel := make(chan types.Request)
 
 	go func() {
 		chWorker, err := conn.Channel()
@@ -83,7 +80,7 @@ func main() {
 		}
 
 		for msg := range msgs {
-			var req Request
+			var req types.Request
 			if err := json.Unmarshal(msg.Body, &req); err != nil {
 				fmt.Printf("Failed to decode message: %s", err)
 				continue
@@ -99,20 +96,20 @@ func main() {
 			// Processing of write requests
 			switch req.Action {
 			case "add":
-				ds.Add(req.Key, req.Value)
+				dataStorage.Add(req.Key, req.Value)
 				fmt.Fprintf(f, "[add] Added key %s with value %s\n", req.Key, req.Value)
 			case "remove":
-				ds.Remove(req.Key)
+				dataStorage.Remove(req.Key)
 				fmt.Fprintf(f, "[remove] key %s\n", req.Key)
 			case "get":
-				value, exists := ds.Get(req.Key)
+				value, exists := dataStorage.Get(req.Key)
 				if exists {
 					fmt.Fprintf(f, "[get] Got key %s with value %s\n", req.Key, value)
 				} else {
 					fmt.Fprintf(f, "[get] Key %s doesn't exist\n", req.Key)
 				}
 			case "getAll":
-				items := ds.GetAll()
+				items := dataStorage.GetAll()
 				b, _ := json.Marshal(items)
 				fmt.Fprintf(f, "[getAll] All values %s\n", string(b))
 			}
