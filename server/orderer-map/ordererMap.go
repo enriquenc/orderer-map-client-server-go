@@ -46,7 +46,7 @@ func (m *OrderedMap) Add(key, value string) {
 	}
 }
 
-func (m *OrderedMap) Remove(key string) {
+func (m *OrderedMap) Remove(key string) bool {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -62,7 +62,9 @@ func (m *OrderedMap) Remove(key string) {
 			m.tail = node.prev
 		}
 		delete(m.items, key)
+		return exists
 	}
+	return false
 }
 
 func (m *OrderedMap) Get(key string) (string, bool) {

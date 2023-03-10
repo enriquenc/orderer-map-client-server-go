@@ -22,8 +22,12 @@ func ProcessRequests(reqs <-chan types.Request, logger *logger.Logger) {
 			logger.Log(fmt.Sprintf("[add] Added key %s with value %s", req.Key, req.Value))
 
 		case types.RemoveItem:
-			dataStorage.Remove(req.Key)
-			logger.Log(fmt.Sprintf("[remove] key %s", req.Key))
+			exists := dataStorage.Remove(req.Key)
+			if exists {
+				logger.Log(fmt.Sprintf("[remove] key %s", req.Key))
+			} else {
+				logger.Log(fmt.Sprintf("[remove] key %s doesn't exist", req.Key))
+			}
 		case types.GetItem:
 			value, exists := dataStorage.Get(req.Key)
 			if exists {
