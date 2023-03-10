@@ -38,6 +38,23 @@ go run client -file=testdata0-20.json & go run client -file=testdata30-50.json &
 Resust will be randomly merged but with correct data order from both files.
 
 
+## Run unit tests of all modules
+
+```bash
+$ go test ./server/... ./client/... ./mq/...
+ok      server/logger   0.399s
+ok      server/orderer-map      0.577s
+ok      server/request-manager  1.502s
+ok      client  0.826s
+```
+
+To test rabbitmq module the RabbitMQ instance should be run
+
+```bash
+$ go test ./mq/...
+ok      github.com/enriquenc/orderer-map-client-server-go/mq    1.338s
+```
+
 ## Modules description
 ### client
 The client performs synchronized writing (to keep the correct order of operations) to the message queue.
