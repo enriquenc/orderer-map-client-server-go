@@ -16,7 +16,6 @@ func parseRequestData(fileName, action, key, value string) ([]types.TestDataActi
 		if err != nil {
 			return nil, fmt.Errorf("Error in file passing: %v", err)
 		}
-		println(testData[0].RequestData.Action)
 	} else {
 		err := validateCommandLineArguments(action, key, value)
 		if err != nil {
