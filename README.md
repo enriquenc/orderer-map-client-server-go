@@ -4,7 +4,7 @@ The repository consists of 3 parts: client, server, and testDataGenerator
 
 ## Prerequisites
 1. You need to have docker installed in your system
-2. A working directory is required - for example, Go Developers use the $HOME/go/src/github.com/<your_github_userid> directory. This is a Golang Community recommendation for Go projects.
+2. A working directory is required - for example, Go Developers use the ```$HOME/go/src/github.com/<your_github_userid>``` directory. This is a Golang Community recommendation for Go projects.
 ## Usage
 
 1. Clone repository to your $HOME/go/src/github.com <your_github_userid> location
