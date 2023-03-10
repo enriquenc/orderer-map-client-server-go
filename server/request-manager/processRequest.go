@@ -19,26 +19,26 @@ func ProcessRequests(reqs <-chan types.Request, logger *logger.Logger) {
 		switch req.Action {
 		case types.AddItem:
 			dataStorage.Add(req.Key, req.Value)
-			logger.Log(fmt.Sprintf("[add] Added key %s with value %s", req.Key, req.Value))
+			go logger.Log(fmt.Sprintf("[add] Added key %s with value %s", req.Key, req.Value))
 
 		case types.RemoveItem:
 			exists := dataStorage.Remove(req.Key)
 			if exists {
-				logger.Log(fmt.Sprintf("[remove] key %s", req.Key))
+				go logger.Log(fmt.Sprintf("[remove] key %s", req.Key))
 			} else {
-				logger.Log(fmt.Sprintf("[remove] key %s doesn't exist", req.Key))
+				go logger.Log(fmt.Sprintf("[remove] key %s doesn't exist", req.Key))
 			}
 		case types.GetItem:
 			value, exists := dataStorage.Get(req.Key)
 			if exists {
-				logger.Log(fmt.Sprintf("[get] Got key %s with value %s", req.Key, value))
+				go logger.Log(fmt.Sprintf("[get] Got key %s with value %s", req.Key, value))
 			} else {
-				logger.Log(fmt.Sprintf("[get] Key %s doesn't exist", req.Key))
+				go logger.Log(fmt.Sprintf("[get] Key %s doesn't exist", req.Key))
 			}
 		case types.GetAll:
 			items := dataStorage.GetAll()
 			b, _ := json.Marshal(items)
-			logger.Log(fmt.Sprintf("[getAll] All values %s", string(b)))
+			go logger.Log(fmt.Sprintf("[getAll] All values %s", string(b)))
 		}
 	}
 }
