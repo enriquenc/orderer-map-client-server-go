@@ -3,7 +3,6 @@ package requestmanager
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	logger "server/logger"
 
 	orderermap "server/orderer-map"
@@ -11,14 +10,7 @@ import (
 	types "github.com/enriquenc/orderer-map-client-server-go/shared"
 )
 
-func ProcessRequests(reqs <-chan types.Request, fileName string) {
-	// Initialize logger
-	logger, err := logger.NewLogger(fileName)
-	if err != nil {
-		log.Fatalf("Error opening log file: %v", err)
-	}
-	defer logger.Close()
-
+func ProcessRequests(reqs <-chan types.Request, logger *logger.Logger) {
 	// Create an OrderedMap to store the processed requests
 	dataStorage := orderermap.NewOrderedMap()
 

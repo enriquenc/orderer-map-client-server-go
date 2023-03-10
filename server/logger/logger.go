@@ -6,7 +6,9 @@ import (
 )
 
 type Logger struct {
-	file *os.File
+	file      *os.File
+	writeChan chan string
+	done      chan struct{}
 }
 
 func NewLogger(filename string) (*Logger, error) {
@@ -15,13 +17,30 @@ func NewLogger(filename string) (*Logger, error) {
 		return nil, err
 	}
 
-	return &Logger{file: file}, nil
+	l := &Logger{
+		file:      file,
+		writeChan: make(chan string),
+		done:      make(chan struct{}),
+	}
+
+	go l.writeLoop()
+
+	return l, nil
 }
 
 func (l *Logger) Log(message string) {
-	fmt.Fprintln(l.file, message)
+	l.writeChan <- message
 }
 
 func (l *Logger) Close() {
+	close(l.writeChan)
+	<-l.done
+}
+
+func (l *Logger) writeLoop() {
+	for message := range l.writeChan {
+		fmt.Fprintln(l.file, message)
+	}
 	l.file.Close()
+	close(l.done)
 }
