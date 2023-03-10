@@ -1,6 +1,6 @@
 # Orderer Map client-server application | Golang
 
-The repository consists of 3 parts: client, server, and testDataGenerator
+This repository contains a Golang implementation of a client-server application that uses an external queue for handling requests and an ordered map data structure to keep the order of items added.
 
 ## Prerequisites
 1. You need to have docker installed in your system
